@@ -32,8 +32,10 @@ RUN cd .. && rm -rf ${r_version}.tar.gz ${r_version}
 
 RUN R -e 'install.packages("mixOmics", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)'
 RUN R -e 'install.packages("Rserve", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)'
+RUN R -e 'install.packages("clusterSim", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)'
 
 RUN R -e 'options("BioC_mirror" = "'${bioc}'");source("http://bioconductor.org/biocLite.R");biocLite("phyloseq", clean=T)'
+
 
 RUN rm -rf /tmp/Rtmp*
 

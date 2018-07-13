@@ -34,7 +34,7 @@ RUN cd MaxBin-${version}/src \
 ENV PATH $PATH:/opt/FragGeneScan/:/opt/idba/
 
 ## Remove the settings files that contains hardcoded path to aux tools
-RUN rm /MaxBin-${version}/settings
+RUN rm /MaxBin-${version}/setting
 
 WORKDIR /MaxBin-${version}/
 

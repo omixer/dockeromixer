@@ -28,6 +28,7 @@ RUN cd MaxBin-${version}/src \
  && mv idba-*/bin/ /opt/idba \
  && mv FragGeneScan1.30 /opt/FragGeneScan \
  && rm -rf /opt/FragGeneScan/example \
+ && cd .. \
  && rm -rf auxiliary \
  && rm setting
 

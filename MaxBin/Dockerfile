@@ -11,12 +11,12 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends build-essential wget autoconf unzip ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 # Download 
-RUN wget --no-check-certificate https://sourceforge.net/projects/maxbin/files/MaxBin-${version}.tar.gz/download \
+RUN wget https://sourceforge.net/projects/maxbin/files/MaxBin-${version}.tar.gz/download \
  && tar -xzvf download \
  && rm download
 
 ENV PATH $PATH:.
-# Build MaxBin and dependencies  
+# Build MaxBin and dependencies, then clean up and remove the setting file that contains hardcoded path to aux tools
 RUN cd MaxBin-${version}/src \
  && make \
  && cd .. \
@@ -28,13 +28,11 @@ RUN cd MaxBin-${version}/src \
  && mv idba-*/bin/ /opt/idba \
  && mv FragGeneScan1.30 /opt/FragGeneScan \
  && rm -rf /opt/FragGeneScan/example \
- && rm -rf auxiliary
+ && rm -rf auxiliary \
+ && rm setting
 
 # Configure PATH
 ENV PATH $PATH:/opt/FragGeneScan/:/opt/idba/
-
-## Remove the settings files that contains hardcoded path to aux tools
-RUN rm /MaxBin-${version}/setting
 
 WORKDIR /MaxBin-${version}/
 

@@ -21,23 +21,21 @@ RUN  apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN wget ${cran}/src/base/R-3/${r_version}.tar.gz
-RUN tar xzvf ${r_version}.tar.gz
+ && tar xzvf ${r_version}.tar.gz
+ && rm ${r_version}.tar.gz
   
 RUN cd ${r_version} \
  && ./configure --enable-R-shlib --enable-shared --with-readline=no --with-x=no --with-cairo --with-libpng --with-jpeglib \
  && make \
  && make install
  
-RUN cd .. && rm -rf ${r_version}.tar.gz ${r_version}
+RUN cd .. && ${r_version}
 
-RUN R -e 'install.packages("mixOmics", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)'
-RUN R -e 'install.packages("Rserve", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)'
-RUN R -e 'install.packages("clusterSim", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)'
+RUN R -e 'install.packages("mixOmics", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)' && rm -rf /tmp/Rtmp*
+RUN R -e 'install.packages("Rserve", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)' && rm -rf /tmp/Rtmp*
+RUN R -e 'install.packages("clusterSim", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)' && rm -rf /tmp/Rtmp*
 
-RUN R -e 'options("BioC_mirror" = "'${bioc}'");source("http://bioconductor.org/biocLite.R");biocLite("phyloseq", clean=T)'
-
-
-RUN rm -rf /tmp/Rtmp*
+RUN R -e 'options("BioC_mirror" = "'${bioc}'");source("http://bioconductor.org/biocLite.R");biocLite("phyloseq", clean=T)' && rm -rf /tmp/Rtmp*
 
 EXPOSE 6311
 ENTRYPOINT R -e "Rserve::run.Rserve(remote=TRUE)"

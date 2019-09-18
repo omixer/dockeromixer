@@ -1,0 +1,30 @@
+version: '3'
+services:
+  enteropathway:
+    image: omixer/enteropathway:0.0.1 
+    restart: always
+    ports:
+    - 4201:80
+    depends_on:
+    - restpath
+    links:
+    - restpath
+  restpath:
+    image: omixer/restpath:0.1
+    restart: always
+    ports:
+    - 8080:8080
+    depends_on:
+    - db
+    links:
+    - db
+  db:
+    image: neo4j:3.5.8
+    restart: always
+    volumes:
+    - $HOME/neo4j/data:/data
+    - $HOME/neo4j/logs:/logs
+    - $HOME/neo4j/import:/import
+    ports:
+    - 7474:7474
+    - 7687:7687

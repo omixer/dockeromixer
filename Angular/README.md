@@ -3,13 +3,13 @@
 #### A typical development workflow 
 
 ```bash
-VERSION=8.0.3
+VERSION=14.2.8
 # chose a project name 
 PROJECT_NAME=angular_project
 CONTAINER_NAME=container_name
 
 # create a new angular project
-docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v ${PWD}:/app omixer/angular:${VERSION} new $PROJECT_NAME --routing=true --style=styl --commit=false --skipGit=true
+docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v ${PWD}:/app omixer/angular:${VERSION} new $PROJECT_NAME --routing=true --style=scss --commit=false --skip-git --strict --package-manager=yarn
 
 # remove node module
 cd $PROJECT_NAME

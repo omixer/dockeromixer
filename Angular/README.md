@@ -3,7 +3,7 @@
 #### A typical development workflow 
 
 ```bash
-VERSION=14.2.8
+VERSION=17.1.0
 # chose a project name 
 PROJECT_NAME=angular_project
 CONTAINER_NAME=container_name

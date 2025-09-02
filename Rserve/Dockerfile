@@ -1,13 +1,13 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
-LABEL description="Builds R from source and installs Rserve, mixOmics, and phyloseq "
-LABEL maintainer="youssef.darzi@gmail.com"
+LABEL description="Builds R from source and installs Rserve, mixOmics, and phyloseq"
+LABEL maintainer="youssef.darzi@omixer.io"
 
 # Define a mirror for R, CRAN and BioC
-ENV cran https://cran.ism.ac.jp/
-ENV bioc https://bioc.ism.ac.jp/
+ENV cran https://ftp.yz.yamagata-u.ac.jp/pub/cran/
+ENV bioc https://bioconductor.riken.jp/
 # Set a target R version
-ENV r_version R-3.4.2
+ENV r_version R-4.4.1
 # Disable deb interactivity (will assume that timezone is CET )
 ENV DEBIAN_FRONTEND noninteractive
 # add wget to download R
@@ -20,8 +20,8 @@ RUN  apt-get update \
      libmagick++-dev libglu1-mesa-dev libgl1-mesa-dev libssl-dev tk-dev \
   && rm -rf /var/lib/apt/lists/*
 
-RUN wget ${cran}/src/base/R-3/${r_version}.tar.gz
- && tar xzvf ${r_version}.tar.gz
+RUN wget ${cran}/src/base/R-4/${r_version}.tar.gz \
+ && tar xzvf ${r_version}.tar.gz \
  && rm ${r_version}.tar.gz
   
 RUN cd ${r_version} \
@@ -29,13 +29,12 @@ RUN cd ${r_version} \
  && make \
  && make install
  
-RUN cd .. && ${r_version}
+RUN cd .. && rm -rf ${r_version}
 
-RUN R -e 'install.packages("mixOmics", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)' && rm -rf /tmp/Rtmp*
 RUN R -e 'install.packages("Rserve", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)' && rm -rf /tmp/Rtmp*
 RUN R -e 'install.packages("clusterSim", repos="'${cran}'",dependencies=TRUE, verbose=T, quiet=T, clean=T)' && rm -rf /tmp/Rtmp*
 
-RUN R -e 'options("BioC_mirror" = "'${bioc}'");source("http://bioconductor.org/biocLite.R");biocLite("phyloseq", clean=T)' && rm -rf /tmp/Rtmp*
+RUN R -e 'options("BioC_mirror" = "'${bioc}'");install.packages("BiocManager", repos="'${cran}'");BiocManager::install(version = "3.20", ask = FALSE);BiocManager::install(c("mixOmics", "phyloseq"), clean=T);' && rm -rf /tmp/Rtmp*
 
 EXPOSE 6311
 ENTRYPOINT R -e "Rserve::run.Rserve(remote=TRUE)"

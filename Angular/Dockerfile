@@ -1,4 +1,4 @@
-FROM node:18.20.3 AS node
+FROM node:24.7.0 AS node
 
 LABEL description="Angular image"
 LABEL maintainer="youssef.darzi@omixer.io"
@@ -8,7 +8,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
-ARG NG_CLI_VERSION=17.1.0
+ARG NG_CLI_VERSION=20.2.1
 
 RUN yarn global add @angular/cli@$NG_CLI_VERSION -T && rm -rf $(yarn cache dir)
 RUN ng config -g cli.packageManager yarn
